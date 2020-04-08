@@ -1,10 +1,10 @@
 #include<stdio.h>
 struct process
 {
-	int processID;
-	int burstTime;
-	int arrivalTime;
-	int priority;
+	int p_id;
+	int b_t;
+	int a_t;
+	int prior;
 	int waitTime;
 };
 int total_time,burst_time=0; //to calculate whole complete completion time and burst time
@@ -27,22 +27,22 @@ void execute()
 	{
 		int wait,j;
 		//to increase the priority and decrease the burst time of priority in excecution
-		if(burst_time!=0 && queue[0].burstTime!=0)
+		if(burst_time!=0 && queue[0].b_t!=0)
 		{
-			queue[0].burstTime--;
+			queue[0].b_t--;
 			burst_time--;
-			queue[0].priority++;
-			queue[0].arrivalTime=total_time+1;
+			queue[0].prior++;
+			queue[0].a_t=total_time+1;
 			total_time++;
 		//to increase the wait and priority of waiting process	
 			for(wait=1;wait<=total;wait++)
 			{
-				queue[wait].priority+=2;
+				queue[wait].prior+=2;
 				queue[wait].waitTime=++queue[wait].waitTime;
 			}
 		}
 		//if process gets completed ,it is put in result queue
-		if(queue[0].burstTime==0)
+		if(queue[0].b_t==0)
 		{
 			i++;
 			result[i]=queue[0];
@@ -57,7 +57,7 @@ void execute()
 		{
 			for(j=0;j<total;j++)
 			{
-				if(queue[wait].priority<=queue[j].priority)
+				if(queue[wait].prior<=queue[j].prior)
 				{
 					swap=queue[wait];
 					queue[wait]=queue[j];
@@ -65,7 +65,7 @@ void execute()
 				}
 			}
 		}
-		if(queue[0].priority<=queue[1].priority && total>=1)
+		if(queue[0].prior<=queue[1].prior && total>=1)
 		{
 			swap=queue[0];
 			for(wait=0;wait<total;wait++)
@@ -88,28 +88,28 @@ void main()
 	struct process pcreate[n];
 	for(l=0;l<n;l++)
 	{
-		pcreate[l].processID=l+1;
+		pcreate[l].p_id=l+1;
 		printf("\nEnter the arrival time of process[%d]: ",l+1);
-		scanf("%d",&pcreate[l].arrivalTime);
+		scanf("%d",&pcreate[l].a_t);
 		printf("\nEnter the burst time of process[%d]: ",l+1);
-		scanf("%d",&pcreate[l].burstTime);
-		pcreate[l].priority=0;
+		scanf("%d",&pcreate[l].b_t);
+		pcreate[l].prior=0;
 		pcreate[l].waitTime=0;
-		burst_time=burst_time+pcreate[l].burstTime;
+		burst_time=burst_time+pcreate[l].b_t;
 	}
 	for(l=0;l<n;l++)
 	{
 		for(j=0;j<n;j++)
 		{
-		if(pcreate[l].arrivalTime<pcreate[j].arrivalTime)
+		if(pcreate[l].a_t<pcreate[j].a_t)
 		{
 			swap=pcreate[l];
 			pcreate[l]=pcreate[j];
 			pcreate[j]=swap;
 		}
-		if(pcreate[l].arrivalTime==pcreate[j].arrivalTime)
+		if(pcreate[l].a_t==pcreate[j].a_t)
 		{
-			if(pcreate[l].burstTime<=pcreate[j].burstTime)
+			if(pcreate[l].b_t<=pcreate[j].b_t)
 			{
 			swap=pcreate[l];
 			pcreate[l]=pcreate[j];
@@ -125,14 +125,14 @@ void main()
 	printf("\n.............................................\n");
 	for(l=0;l<n;l++)
 	{
-		printf(" %d            	   %d                   %d\n",pcreate[l].processID,pcreate[l].arrivalTime,pcreate[l].burstTime );
+		printf(" %d            	   %d                   %d\n",pcreate[l].p_id,pcreate[l].a_t,pcreate[l].b_t );
 	}
-	total_time=pcreate[0].arrivalTime;
-	for(j=pcreate[0].arrivalTime;j<=pcreate[n-1].arrivalTime;j++)
+	total_time=pcreate[0].a_t;
+	for(j=pcreate[0].a_t;j<=pcreate[n-1].a_t;j++)
 	{
 		for(l=0;l<n;l++)
 		{
-			if(pcreate[l].arrivalTime==j && count!=n)
+			if(pcreate[l].a_t==j && count!=n)
 			{
 				total++;
 				queue[total]=pcreate[l];
@@ -160,13 +160,14 @@ void main()
 	{
 		for(j=0;j<n;j++)
 		{
-			if(result[l].processID==pcreate[j].processID)
+			if(result[l].p_id==pcreate[j].p_id)
 			{
-	printf("  	%d                  %d                    %d                    	%d\n",result[l].processID,pcreate[j].arrivalTime,pcreate[j].burstTime,result[l].waitTime);
+	printf("  	%d                  %d                    %d                    	%d\n",result[l].p_id,pcreate[j].a_t,pcreate[j].b_t,result[l].waitTime);
 			break;
 			}
 		}
 		averageWaitTime+=(result[l].waitTime);
 	}
 	printf("AVERAGE  WAITING  TIME :%f\n",averageWaitTime/n);
-}	
+}
+	
